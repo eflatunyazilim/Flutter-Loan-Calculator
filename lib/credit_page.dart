@@ -1,3 +1,4 @@
+import 'package:calculator/table_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
     '180 Ay'
   ];
 
+  double bsmv = 0.05;
+  double kkdf = 0.15;
+
+
+
   String dropdownValue;
   TabController _tabController;
 
@@ -43,6 +49,10 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    return tabBar();
+  }
+
+  Widget tabBar(){
     return Container(
       color: Colors.white,
       child: ListView(
@@ -80,7 +90,9 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                     ),
                     Container(
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          // Tab bar butonları
                           Padding(
                             padding: EdgeInsets.only(left: 10, right: 10),
                             child: Container(
@@ -89,9 +101,15 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                     width: 1, color: Colors.grey.shade200),
                               ),
                               child: Container(
+                                //color: Colors.redAccent,
                                 height: 40,
                                 margin: EdgeInsets.all(10),
                                 child: TabBar(
+                                  //onTap: (e){debugPrint(e.toString());},
+                                  //indicatorSize:TabBarIndicatorSize.label,// Üstteki çubuk küçüldü
+                                  //unselectedLabelStyle: TextStyle(backgroundColor: Colors.grey.shade400,),
+                                  //labelStyle: TextStyle(color: Colors.redAccent),
+
                                   controller: _tabController,
                                   labelColor: Colors.black,
                                   unselectedLabelColor: Colors.black,
@@ -100,29 +118,33 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                       color: Colors.blue,
                                       width: 4.0,
                                     ),
-                                    insets: EdgeInsets.fromLTRB(
-                                        0.0, 0.0, 0.0, 40.0),
+                                    insets: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 40.0),
                                   ),
                                   tabs: <Widget>[
-                                    Container(
+                                    /*Container(
                                       height: 35,
                                       child: Text("Konut Kredisi"),
                                       alignment: Alignment.center,
-                                      color: Colors.white,
                                     ),
                                     Container(
                                       height: 35,
                                       alignment: Alignment.center,
-                                      color: Colors.white,
                                       child: Text("İhtiyaç Kredisi"),
+                                    ),*/
+                                    Tab(
+                                      text: "Konut Kredisi",
                                     ),
+                                    Tab(
+                                      text: "İhtiyaç Kredisi",
+                                    )
                                   ],
                                 ),
                               ),
                             ),
                           ),
+                          // Tab bar elemanları
                           Container(
-                            height: 200,
+                            height: 300,
                             margin: EdgeInsets.only(
                                 left: 10, right: 10, bottom: 10),
                             decoration: BoxDecoration(
@@ -133,123 +155,19 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                             ),
                             child: TabBarView(
                               controller: _tabController,
-                              //children: myTabs,
                               children: <Widget>[
-                                Tab(
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height,
-                                    child: Column(
-                                      children: <Widget>[
-                                        Flexible(
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                left: 10, top: 10, right: 10),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.grey.shade200),
-                                            ),
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                labelText: "Kredi Tutarı",
-                                                labelStyle: TextStyle(
-                                                    color: Colors.black54),
-                                                focusedBorder: InputBorder.none,
-                                                border: InputBorder.none,
-                                                contentPadding:
-                                                EdgeInsets.only(left: 10),
-                                              ),
-                                              keyboardType:
-                                              TextInputType.number,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Flexible(
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            margin: EdgeInsets.only(
-                                              left: 10,
-                                              right: 10,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.grey.shade200),
-                                            ),
-                                            child: DropdownButtonHideUnderline(
-                                              child: DropdownButton<String>(
-                                                hint: Padding(
-                                                  padding:
-                                                  EdgeInsets.only(left: 10),
-                                                  child: Text("Vade"),
-                                                ),
-                                                value: dropdownValue,
-                                                elevation: 16,
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                                onChanged: (String newValue) {
-                                                  setState(() {
-                                                    dropdownValue = newValue;
-                                                  });
-                                                },
-                                                items: _credits.map<
-                                                    DropdownMenuItem<
-                                                        String>>(
-                                                        (String value) {
-                                                      return DropdownMenuItem<
-                                                          String>(
-                                                        value: value,
-                                                        child: Padding(
-                                                          padding: EdgeInsets.only(
-                                                              left: 10),
-                                                          child: Text(value),
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Flexible(
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            margin: EdgeInsets.only(
-                                                left: 10,
-                                                right: 10,
-                                                bottom: 10),
-                                            color: Colors.blue,
-                                            child: FlatButton(
-                                              child: Text(
-                                                "Konut Kredisi Hesapla",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
                                 Tab(
                                   child: Column(
                                     children: <Widget>[
+                                      SizedBox(height: 10),
                                       Flexible(
                                         child: Container(
-                                          margin: EdgeInsets.only(
-                                              left: 10, top: 10, right: 10),
+                                          margin: EdgeInsets.only(left: 10, right: 10),
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                                width: 1,
-                                                color: Colors.grey.shade200),
+                                              width: 1,
+                                              color: Colors.grey.shade200,
+                                            ),
                                           ),
                                           child: TextFormField(
                                             decoration: InputDecoration(
@@ -261,15 +179,42 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               contentPadding:
                                               EdgeInsets.only(left: 10),
                                             ),
-                                            keyboardType: TextInputType.number,
+                                            keyboardType:
+                                            TextInputType.number,
                                           ),
                                         ),
                                       ),
                                       SizedBox(height: 10),
                                       Flexible(
                                         child: Container(
-                                          width:
-                                          MediaQuery.of(context).size.width,
+                                          margin: EdgeInsets.only(
+                                              left: 10,  right: 10),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.grey.shade200),
+                                          ),
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                              labelText: "Faiz",
+                                              labelStyle: TextStyle(
+                                                  color: Colors.black54),
+                                              focusedBorder: InputBorder.none,
+                                              border: InputBorder.none,
+                                              contentPadding:
+                                              EdgeInsets.only(left: 10),
+                                            ),
+                                            keyboardType:
+                                            TextInputType.number,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Flexible(
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width,
                                           margin: EdgeInsets.only(
                                             left: 10,
                                             right: 10,
@@ -296,9 +241,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                 });
                                               },
                                               items: _credits.map<
-                                                  DropdownMenuItem<String>>(
+                                                  DropdownMenuItem<
+                                                      String>>(
                                                       (String value) {
-                                                    return DropdownMenuItem<String>(
+                                                    return DropdownMenuItem<
+                                                        String>(
                                                       value: value,
                                                       child: Padding(
                                                         padding: EdgeInsets.only(
@@ -314,10 +261,156 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                       SizedBox(height: 10),
                                       Flexible(
                                         child: Container(
-                                          width:
-                                          MediaQuery.of(context).size.width,
+                                          alignment: Alignment.centerRight,
+                                          child: FlatButton(
+                                            child: Text("Gelişmiş Seçenekler",style: TextStyle(fontSize: 12,color: Colors.blueAccent),),
+                                            onPressed: (){
+                                              settings();
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Flexible(
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width,
                                           margin: EdgeInsets.only(
-                                              left: 10, right: 10, bottom: 10),
+                                            left: 10,
+                                            right: 10,
+                                          ),
+                                          color: Colors.blue,
+                                          child: FlatButton(
+                                            child: Text(
+                                              "Konut Kredisi Hesapla",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            onPressed: (){
+                                              Navigator.push(context, MaterialPageRoute(builder: (context)=>TablePage()));
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                    ],
+                                  ),
+                                ),
+                                Tab(
+                                  child: Column(
+                                    children: <Widget>[
+                                      SizedBox(height: 10),
+                                      Flexible(
+                                        child: Container(
+                                          margin: EdgeInsets.only(left: 10, right: 10),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              width: 1,
+                                              color: Colors.grey.shade200,
+                                            ),
+                                          ),
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                              labelText: "Kredi Tutarı",
+                                              labelStyle: TextStyle(
+                                                  color: Colors.black54),
+                                              focusedBorder: InputBorder.none,
+                                              border: InputBorder.none,
+                                              contentPadding:
+                                              EdgeInsets.only(left: 10),
+                                            ),
+                                            keyboardType:
+                                            TextInputType.number,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Flexible(
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              left: 10,  right: 10),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.grey.shade200),
+                                          ),
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                              labelText: "Faiz",
+                                              labelStyle: TextStyle(
+                                                  color: Colors.black54),
+                                              focusedBorder: InputBorder.none,
+                                              border: InputBorder.none,
+                                              contentPadding:
+                                              EdgeInsets.only(left: 10),
+                                            ),
+                                            keyboardType:
+                                            TextInputType.number,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Flexible(
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width,
+                                          margin: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.grey.shade200),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              hint: Padding(
+                                                padding:
+                                                EdgeInsets.only(left: 10),
+                                                child: Text("Vade"),
+                                              ),
+                                              value: dropdownValue,
+                                              elevation: 16,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                              onChanged: (String newValue) {
+                                                setState(() {
+                                                  dropdownValue = newValue;
+                                                });
+                                              },
+                                              items: _credits.map<
+                                                  DropdownMenuItem<
+                                                      String>>(
+                                                      (String value) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: value,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.only(
+                                                            left: 10),
+                                                        child: Text(value),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Flexible(
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width,
+                                          margin: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                          ),
                                           color: Colors.blue,
                                           child: FlatButton(
                                             child: Text(
@@ -327,6 +420,9 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                 fontSize: 12,
                                               ),
                                             ),
+                                            onPressed: (){
+                                              Navigator.push(context, MaterialPageRoute(builder: (context)=>TablePage()));
+                                            },
                                           ),
                                         ),
                                       ),
@@ -348,4 +444,96 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
       ),
     );
   }
+
+
+  void settings() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Column(
+            children: <Widget>[
+              Text("Gelişmiş Ayarlar",
+                style: TextStyle(fontSize: 20,),
+                textAlign: TextAlign.center,
+              ),
+              Divider(),
+            ],
+          ),
+          content: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 10, right: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.grey.shade200,
+                      ),
+                    ),
+                    child: TextFormField(
+                      initialValue: kkdf.toString(),
+                      decoration: InputDecoration(
+                        labelText: "KKDF",
+                        labelStyle: TextStyle(
+                            color: Colors.black54),
+                        focusedBorder: InputBorder.none,
+                        border: InputBorder.none,
+                        contentPadding:
+                        EdgeInsets.only(left: 10),
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (input){
+                        kkdf = double.parse(input);
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10,),
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 10, right: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.grey.shade200,
+                      ),
+                    ),
+                    child: TextFormField(
+                      initialValue: bsmv.toString(),
+                      decoration: InputDecoration(
+                        labelText: "BSMV",
+                        labelStyle: TextStyle(
+                            color: Colors.black54),
+                        focusedBorder: InputBorder.none,
+                        border: InputBorder.none,
+                        contentPadding:
+                        EdgeInsets.only(left: 10),
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (input){
+                        bsmv = double.parse(input);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          elevation: 11,
+          actions: <Widget>[
+            FlatButton(
+              child: Text("OK",style: TextStyle(color: Colors.blueAccent),),
+              onPressed: (){
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
 }
