@@ -12,28 +12,49 @@ class CreditPage extends StatefulWidget {
 
 class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
 
-  List<int> creditTermMonthly = [];
-  List<int> creditTermYearly = [];
-
+  // Widget değişkenleri
+  var _formKey = GlobalKey<FormState>();
+  bool _autovalidate = false;
+  TabController _tabController;
+  bool isVisible = false;
+  double contSize = 300.0;
   double creditAmount; // Girilen kredi tutarı
   double interest; // Girilen faiz
   int creditTermM; // Girilen vade ihtiyaç
   int creditTermY; // Girilen vade konut
-  double bsmv = 0.05; // girilen bsmv
-  double kkdf = 0.15; // girilen kkdf
-  double mainCurrency;
+  double bsmv = 0.05; // Girilen bsmv
+  double kkdf = 0.15; // Girilen kkdf
+  List<int> creditTermMonthly = []; // Aylık Vade Dropdown listesi
+  List<int> creditTermYearly = []; // Yıllık Vade Dropdown listesi
 
-  TabController _tabController;
-  bool isVisible = false;
-  double contSize = 300.0;
+  // hesaplama method değişkenleri
+  CreditTableModel creditTableModel;
+  List<CreditTableModel> creditModelList = [];
+  double taxInterest; // Vergi faizi
+  double temp1, temp2; // değişkenler
+  double installment; // aylık taksit
+  double mainRemainingMoney; // Kalan ana para
 
   // todo: for Localization
   String descriptionTitle = "Konut Kredi Teklifleri";
-  String description =
-      "Ev satın alırken istediğinizde size uygun konut veya "
+  String description = "Ev satın alırken istediğinizde size uygun konut veya "
       "ihtiyaç kredisi oranlarını .... uygulaması üzerinden "
       "tek bir sayfada kaşılaştırarak, kredi başvurunuzu "
       "kolaylıkla yapabilirsiniz.";
+  String tabFirstTitle = "Konut Kredisi";
+  String tabSecondTitle = "İhtiyaç Kredisi";
+  String creditAmountInputLabelText = "Kredi Tutarı";
+  String interestInputLabelText = "Faiz";
+  String termDropDownText = "Vade";
+  String monthText = " Ay";
+  String settingsButtonText = "Gelişmiş Seçenekler";
+  String bsmvText = "BSMV";
+  String kkdfText = "KKDF";
+  String firstCalculatorButtonText = "Konut Kredisi Hesapla";
+  String secondCalculatorButtonText = "İhtiyaç Kredisi Hesapla";
+  String validatorWarning = "Lütfen bu alanı doldurun!";
+  String validatorWarning2 = "Lütfen kullanılabilir değer girin!";
+
   @override
   void initState() {
     _tabController = new TabController(vsync: this, length: 2);
@@ -56,7 +77,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return tabBar();
+    return Form(
+      key: _formKey,
+      autovalidate: _autovalidate,
+      child: tabBar(),
+    );
   }
 
   Widget tabBar() {
@@ -83,7 +108,10 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                         Container(
                           padding:
                               EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: Text(descriptionTitle,style: TextStyle(fontSize: 16,color: Colors.black),),
+                          child: Text(
+                            descriptionTitle,
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
                         ),
                         Container(
                           padding: EdgeInsets.all(10),
@@ -108,10 +136,6 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                 height: 40,
                                 margin: EdgeInsets.all(10),
                                 child: TabBar(
-                                  //onTap: (e){debugPrint(e.toString());},
-                                  //indicatorSize:TabBarIndicatorSize.label,// Üstteki çubuk küçüldü
-                                  //unselectedLabelStyle: TextStyle(backgroundColor: Colors.grey.shade400,),
-                                  //labelStyle: TextStyle(color: Colors.redAccent),
                                   controller: _tabController,
                                   labelColor: Colors.black,
                                   unselectedLabelColor: Colors.black,
@@ -124,21 +148,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                         0.0, 0.0, 0.0, 40.0),
                                   ),
                                   tabs: <Widget>[
-                                    /*Container(
-                                      height: 35,
-                                      child: Text("Konut Kredisi"),
-                                      alignment: Alignment.center,
-                                    ),
-                                    Container(
-                                      height: 35,
-                                      alignment: Alignment.center,
-                                      child: Text("İhtiyaç Kredisi"),
-                                    ),*/
                                     Tab(
-                                      text: "Konut Kredisi",
+                                      text: tabFirstTitle,
                                     ),
                                     Tab(
-                                      text: "İhtiyaç Kredisi",
+                                      text: tabSecondTitle,
                                     )
                                   ],
                                 ),
@@ -176,20 +190,31 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                           ),
                                           child: TextFormField(
                                             decoration: InputDecoration(
-                                              labelText: "Kredi Tutarı",
+                                              labelText:
+                                                  creditAmountInputLabelText,
                                               labelStyle: TextStyle(
                                                   color: Colors.black54),
+                                              errorStyle: TextStyle(color: Colors.red),
                                               focusedBorder: InputBorder.none,
                                               border: InputBorder.none,
                                               contentPadding:
                                                   EdgeInsets.only(left: 10),
                                             ),
                                             keyboardType: TextInputType.number,
+                                            onSaved: (input) {
+                                              setState(() {
+                                                creditAmount =
+                                                    double.parse(input);
+                                              });
+                                            },/*
                                             onChanged: (input) {
-                                              creditAmount =
-                                                  double.parse(input);
-                                              debugPrint(
-                                                  "creditAmount : $creditAmount");
+                                              setState(() {
+                                                creditAmount =
+                                                    double.parse(input);
+                                              });
+                                            },*/
+                                            validator: (String value){
+                                              return validWarn(value);
                                             },
                                           ),
                                         ),
@@ -207,7 +232,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                           ),
                                           child: TextFormField(
                                             decoration: InputDecoration(
-                                              labelText: "Faiz",
+                                              errorStyle: TextStyle(color: Colors.red),
+                                              labelText: interestInputLabelText,
                                               labelStyle: TextStyle(
                                                   color: Colors.black54),
                                               focusedBorder: InputBorder.none,
@@ -216,10 +242,19 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                   EdgeInsets.only(left: 10),
                                             ),
                                             keyboardType: TextInputType.number,
+                                            onSaved: (input) {
+                                              interest = double.parse(input);
+                                            },/*
                                             onChanged: (input) {
                                               interest = double.parse(input);
-                                              debugPrint("interest: $interest");
+                                            },*/
+                                            validator: (String value){
+                                              return validWarn(value);
                                             },
+                                            /*
+                                            validator: (String value){
+                                              return value.isEmpty ? validatorWarning : null;
+                                            },*/
                                           ),
                                         ),
                                       ),
@@ -239,11 +274,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                 color: Colors.grey.shade200),
                                           ),
                                           child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<int>(
+                                            child: DropdownButtonFormField<int>(
                                               hint: Padding(
                                                 padding:
                                                     EdgeInsets.only(left: 10),
-                                                child: Text("Vade"),
+                                                child: Text(termDropDownText),
                                               ),
                                               value: creditTermY,
                                               elevation: 16,
@@ -254,6 +289,9 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                   creditTermY = newValue;
                                                 });
                                               },
+                                              /*validator: (value){
+                                                return value == null ? validatorWarning : null;
+                                              },*/
                                               items: creditTermYearly
                                                   .map<DropdownMenuItem<int>>(
                                                       (int value) {
@@ -265,7 +303,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                     ),
                                                     child: Text(
                                                         value.toString() +
-                                                            " Ay"),
+                                                            monthText),
                                                   ),
                                                 );
                                               }).toList(),
@@ -278,7 +316,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                           alignment: Alignment.centerRight,
                                           child: FlatButton(
                                             child: Text(
-                                              "Gelişmiş Seçenekler",
+                                              settingsButtonText,
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: Colors.blueAccent),
@@ -311,7 +349,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                             child: TextFormField(
                                               initialValue: kkdf.toString(),
                                               decoration: InputDecoration(
-                                                labelText: "KKDF",
+                                                errorStyle: TextStyle(color: Colors.red),
+                                                labelText: kkdfText,
                                                 labelStyle: TextStyle(
                                                     color: Colors.black54),
                                                 focusedBorder: InputBorder.none,
@@ -321,17 +360,33 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               ),
                                               keyboardType:
                                                   TextInputType.number,
-                                              onChanged: (input) {
+                                              onSaved: (input) {
+                                                setState(() {
+                                                  kkdf = double.parse(input);
+                                                  /*if (input != null &&
+                                                      input != "" &&
+                                                      double.parse(input) >
+                                                          0.0) {
+                                                    kkdf = double.parse(input);
+                                                  }*/
+                                                });
+                                              },
+                                              /*onChanged: (input) {
                                                 setState(() {
                                                   if (input != null &&
                                                       input != "" &&
                                                       double.parse(input) >
                                                           0.0) {
                                                     kkdf = double.parse(input);
-                                                    debugPrint("kkdf: $kkdf");
                                                   }
                                                 });
-                                              },
+                                              },*/
+                                              validator: (String value){
+                                                return validWarn(value);
+                                              },/*
+                                              validator: (String value){
+                                                return value.isEmpty ? validatorWarning : null;
+                                              },*/
                                             ),
                                           ),
                                         ),
@@ -357,7 +412,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                             child: TextFormField(
                                               initialValue: bsmv.toString(),
                                               decoration: InputDecoration(
-                                                labelText: "BSMV",
+                                                errorStyle: TextStyle(color: Colors.red),
+                                                labelText: bsmvText,
                                                 labelStyle: TextStyle(
                                                     color: Colors.black54),
                                                 focusedBorder: InputBorder.none,
@@ -367,17 +423,33 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               ),
                                               keyboardType:
                                                   TextInputType.number,
-                                              onChanged: (input) {
+                                              onSaved: (input) {
+                                                setState(() {
+                                                  bsmv = double.parse(input);
+                                                  /*if (input != null &&
+                                                      input != "" &&
+                                                      double.parse(input) >
+                                                          0.0) {
+                                                    bsmv = double.parse(input);
+                                                  }*/
+                                                });
+                                              },
+                                              /*onChanged: (input) {
                                                 setState(() {
                                                   if (input != null &&
                                                       input != "" &&
                                                       double.parse(input) >
                                                           0.0) {
                                                     bsmv = double.parse(input);
-                                                    debugPrint("kkdf: $bsmv");
                                                   }
                                                 });
-                                              },
+                                              },*/
+                                              validator: (String value){
+                                                return validWarn(value);
+                                              },/*
+                                              validator: (String value){
+                                                return value.isEmpty ? validatorWarning : null;
+                                              },*/
                                             ),
                                           ),
                                         ),
@@ -396,30 +468,42 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                           color: Colors.blue,
                                           child: FlatButton(
                                             child: Text(
-                                              "Konut Kredisi Hesapla",
+                                              firstCalculatorButtonText,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12,
                                               ),
                                             ),
                                             onPressed: () {
-                                              calculators(creditTermY).then((value){
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            TablePage(
-                                                              creditTableList: creditModelList,
-                                                              creditAmount: creditAmount,
-                                                              creditTerm: creditTermY,
-                                                              interest: interest,
-                                                              bsmv: bsmv,
-                                                              kkdf: kkdf,
-                                                              installment: installment,
-                                                            )));
-                                              },onError: (error){
-                                                debugPrint("Hata => " + error.toString());
-                                              });
+                                              if(_formKey.currentState.validate()){
+                                                _formKey.currentState.save();
+                                                calculators(creditTermY).then(
+                                                        (value) {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  TablePage(
+                                                                    creditTableList:
+                                                                    creditModelList,
+                                                                    creditAmount:
+                                                                    creditAmount,
+                                                                    creditTerm:
+                                                                    creditTermY,
+                                                                    interest:
+                                                                    interest,
+                                                                    bsmv: bsmv,
+                                                                    kkdf: kkdf,
+                                                                    installment:
+                                                                    installment,
+                                                                  )));
+                                                    }, onError: (error) {});
+                                              } else {
+                                                setState(() {
+                                                  _autovalidate = true; //enable realtime validation
+                                                });
+                                              }
+
                                             },
                                           ),
                                         ),
@@ -445,7 +529,9 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                           ),
                                           child: TextFormField(
                                             decoration: InputDecoration(
-                                              labelText: "Kredi Tutarı",
+                                              errorStyle: TextStyle(color: Colors.red),
+                                              labelText:
+                                                  creditAmountInputLabelText,
                                               labelStyle: TextStyle(
                                                   color: Colors.black54),
                                               focusedBorder: InputBorder.none,
@@ -454,12 +540,20 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                   EdgeInsets.only(left: 10),
                                             ),
                                             keyboardType: TextInputType.number,
-                                            onChanged: (input) {
+                                            onSaved: (input) {
                                               creditAmount =
                                                   double.parse(input);
-                                              debugPrint(
-                                                  "creditAmount : $creditAmount");
                                             },
+                                            /*onChanged: (input) {
+                                              creditAmount =
+                                                  double.parse(input);
+                                            },*/
+                                            validator: (String value){
+                                              return validWarn(value);
+                                            },/*
+                                            validator: (String value){
+                                              return value.isEmpty ? validatorWarning : null;
+                                            },*/
                                           ),
                                         ),
                                       ),
@@ -476,7 +570,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                           ),
                                           child: TextFormField(
                                             decoration: InputDecoration(
-                                              labelText: "Faiz",
+                                              errorStyle: TextStyle(color: Colors.red),
+                                              labelText: interestInputLabelText,
                                               labelStyle: TextStyle(
                                                   color: Colors.black54),
                                               focusedBorder: InputBorder.none,
@@ -485,10 +580,18 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                   EdgeInsets.only(left: 10),
                                             ),
                                             keyboardType: TextInputType.number,
-                                            onChanged: (input) {
+                                            onSaved: (input) {
                                               interest = double.parse(input);
-                                              debugPrint("interest: $interest");
                                             },
+                                            /*onChanged: (input) {
+                                              interest = double.parse(input);
+                                            },*/
+                                            validator: (String value){
+                                              return validWarn(value);
+                                            },/*
+                                            validator: (String value){
+                                              return value.isEmpty ? validatorWarning : null;
+                                            },*/
                                           ),
                                         ),
                                       ),
@@ -512,7 +615,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               hint: Padding(
                                                 padding:
                                                     EdgeInsets.only(left: 10),
-                                                child: Text("Vade"),
+                                                child: Text(termDropDownText),
                                               ),
                                               value: creditTermM,
                                               elevation: 16,
@@ -530,10 +633,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                   value: value,
                                                   child: Padding(
                                                     padding: EdgeInsets.only(
-                                                        left: 10),
+                                                      left: 10,
+                                                    ),
                                                     child: Text(
                                                         value.toString() +
-                                                            " Ay"),
+                                                            monthText),
                                                   ),
                                                 );
                                               }).toList(),
@@ -546,7 +650,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                           alignment: Alignment.centerRight,
                                           child: FlatButton(
                                             child: Text(
-                                              "Gelişmiş Seçenekler",
+                                              settingsButtonText,
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: Colors.blueAccent),
@@ -579,7 +683,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                             child: TextFormField(
                                               initialValue: kkdf.toString(),
                                               decoration: InputDecoration(
-                                                labelText: "KKDF",
+                                                errorStyle: TextStyle(color: Colors.red),
+                                                labelText: kkdfText,
                                                 labelStyle: TextStyle(
                                                     color: Colors.black54),
                                                 focusedBorder: InputBorder.none,
@@ -589,17 +694,33 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               ),
                                               keyboardType:
                                                   TextInputType.number,
-                                              onChanged: (input) {
+                                              onSaved: (input) {
+                                                setState(() {
+                                                  kkdf = double.parse(input);
+                                                  /*if (input != null &&
+                                                      input != "" &&
+                                                      double.parse(input) >
+                                                          0.0) {
+                                                    kkdf = double.parse(input);
+                                                  }*/
+                                                });
+                                              },
+                                              /*onChanged: (input) {
                                                 setState(() {
                                                   if (input != null &&
                                                       input != "" &&
                                                       double.parse(input) >
                                                           0.0) {
                                                     kkdf = double.parse(input);
-                                                    debugPrint("kkdf: $kkdf");
                                                   }
                                                 });
-                                              },
+                                              },*/
+                                              validator: (String value){
+                                                return validWarn(value);
+                                              },/*
+                                              validator: (String value){
+                                                return value.isEmpty ? validatorWarning : null;
+                                              },*/
                                             ),
                                           ),
                                         ),
@@ -625,7 +746,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                             child: TextFormField(
                                               initialValue: bsmv.toString(),
                                               decoration: InputDecoration(
-                                                labelText: "BSMV",
+                                                errorStyle: TextStyle(color: Colors.red),
+                                                labelText: bsmvText,
                                                 labelStyle: TextStyle(
                                                     color: Colors.black54),
                                                 focusedBorder: InputBorder.none,
@@ -635,17 +757,33 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               ),
                                               keyboardType:
                                                   TextInputType.number,
-                                              onChanged: (input) {
+                                              onSaved: (input) {
+                                                setState(() {
+                                                  bsmv = double.parse(input);
+                                                  /*if (input != null &&
+                                                      input != "" &&
+                                                      double.parse(input) >
+                                                          0.0) {
+                                                    bsmv = double.parse(input);
+                                                  }*/
+                                                });
+                                              },
+                                             /* onChanged: (input) {
                                                 setState(() {
                                                   if (input != null &&
                                                       input != "" &&
                                                       double.parse(input) >
                                                           0.0) {
                                                     bsmv = double.parse(input);
-                                                    debugPrint("kkdf: $bsmv");
                                                   }
                                                 });
-                                              },
+                                              },*/
+                                              validator: (String value){
+                                                return validWarn(value);
+                                              },/*
+                                              validator: (String value){
+                                                return value.isEmpty ? validatorWarning : null;
+                                              },*/
                                             ),
                                           ),
                                         ),
@@ -664,18 +802,41 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                           color: Colors.blue,
                                           child: FlatButton(
                                             child: Text(
-                                              "İhtiyaç Kredisi Hesapla",
+                                              secondCalculatorButtonText,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12,
                                               ),
                                             ),
                                             onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          TablePage(creditTableList: creditModelList,)));
+                                              if(_formKey.currentState.validate()){
+                                                _formKey.currentState.save();
+                                                calculators(creditTermM).then(
+                                                        (value) {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  TablePage(
+                                                                    creditTableList:
+                                                                    creditModelList,
+                                                                    creditAmount:
+                                                                    creditAmount,
+                                                                    creditTerm:
+                                                                    creditTermM,
+                                                                    interest:
+                                                                    interest,
+                                                                    bsmv: bsmv,
+                                                                    kkdf: kkdf,
+                                                                    installment:
+                                                                    installment,
+                                                                  )));
+                                                    }, onError: (error) {});
+                                              }else {
+                                                setState(() {
+                                                  _autovalidate = true;
+                                                });
+                                              }
                                             },
                                           ),
                                         ),
@@ -700,72 +861,67 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
     );
   }
 
-  CreditTableModel creditTableModel;
-  List<CreditTableModel> creditModelList = [];
-
-  double taxInterest; // Vergi faizi
-  double temp1, temp2; // değişkenler
-  double installment; // aylık taksit
-  double mainRemainingMoney; // Kalan ana para
-
-  Future<void> calculators(int lenght) async{
-
-    //    $ vergi_faiz = ( $ faiz / 100 ) * ( 1 + $ bsmv + $ kkdf );
-    //    $ deger1 = $ vergi_faiz * pow (( 1 + $ vergi_faiz ), $ vade );
-    //    $ deger2 = pow (( 1 + $ vergi_faiz ), $ vade ) - 1 ;
-    //    $ taksit = $ kredi * $ deger1 / $ deger2 ;
+  Future<void> calculators(int lenght) async {
     taxInterest = (interest / 100) * (1 + bsmv + kkdf);
     temp1 = taxInterest * pow((1 + taxInterest), lenght);
     temp2 = pow((1 + taxInterest), lenght) - 1;
     installment = creditAmount * temp1 / temp2;
 
+    creditModelList.clear();
     for (int row = 0; row < lenght; row++) {
       creditTableModel = new CreditTableModel();
       if (row == 0) {
-        // $ _taksit = $ taksit ;
-        // $ _faiz = $ kredi * ( $ faiz / 100 );
-        //$ _kkdf = $ _faiz * $ kkdf ;
-        //$ _bsmv = $ _faiz * $ bsmv ;
-        //	$ _anapara = $ taksit - ( $ _faiz + $ _kkdf + $ _bsmv );
-        //$ _kalananapara = $ kredi - $ _anapara ;
         creditTableModel.installment = installment;
+
         creditTableModel.interest = creditAmount * (interest / 100);
+
         creditTableModel.kkdf = creditTableModel.interest * kkdf;
+
         creditTableModel.bsmv = creditTableModel.interest * bsmv;
+
         creditTableModel.mainCurrency = installment -
             (creditTableModel.interest +
                 creditTableModel.kkdf +
                 creditTableModel.bsmv);
 
         mainRemainingMoney = creditAmount - creditTableModel.mainCurrency;
-        creditTableModel.mainRemainingMoney = mainRemainingMoney;
-        creditModelList.add(creditTableModel);
 
-      }else{
-        // $ _taksit = $ taksit ;
-        // $ _faiz = $ _kalananapara * ( $ faiz / 100 );
-        // $ _kkdf = $ _faiz * $ kkdf ;
-        // $ _bsmv = $ _faiz * $ bsmv ;
-        // $ _anapara = $ taksit - ( $ _faiz + $ _kkdf + $ _bsmv );
-        // $ _kalananapara = $ _kalananapara - $ _anapara ;
+        creditTableModel.mainRemainingMoney = mainRemainingMoney;
+
+        creditModelList.add(creditTableModel);
+      } else {
         creditTableModel.installment = installment;
+
         creditTableModel.interest = mainRemainingMoney * (interest / 100);
+
         creditTableModel.kkdf = creditTableModel.interest * kkdf;
+
         creditTableModel.bsmv = creditTableModel.interest * bsmv;
-        creditTableModel.mainCurrency =
-            installment - (creditTableModel.interest + creditTableModel.kkdf + creditTableModel.bsmv);
+
+        creditTableModel.mainCurrency = installment -
+            (creditTableModel.interest +
+                creditTableModel.kkdf +
+                creditTableModel.bsmv);
+
         mainRemainingMoney = mainRemainingMoney - creditTableModel.mainCurrency;
+
         creditTableModel.mainRemainingMoney = mainRemainingMoney;
 
         creditModelList.add(creditTableModel);
       }
-      //
     }
-    for(int i=0;i<lenght;i++){
-      debugPrint(creditModelList[i].mainRemainingMoney.toString());
-    }
-
-
   }
 
+  String validWarn(String value){
+    if(value.isEmpty ){
+      return validatorWarning;
+    }else if(double.parse(value) <= 0){
+      return validatorWarning2;
+    } else if(value == null){
+      return validatorWarning;
+    }else{
+      return null;
+    }
+
+  }
 }
