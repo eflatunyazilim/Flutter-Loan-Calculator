@@ -1,13 +1,13 @@
 class CreditTableModel {
-  double installmentAmount;
-  double mainCurrency;
-  double interest;
+  double installment; // Taksit tutarı
+  double mainCurrency; // Ana para
+  double interest; // Faiz
   double kkdf;
   double bsmv;
-  double mainRemainingMoney;
+  double mainRemainingMoney; // Kalan ana para
 
   CreditTableModel({
-    this.installmentAmount,
+    this.installment,
     this.mainCurrency,
     this.interest,
     this.kkdf,
@@ -15,16 +15,5 @@ class CreditTableModel {
     this.mainRemainingMoney,
   });
 
-//
-//  Map<String, dynamic> toJson() {
-//    final Map<String, dynamic> data = new Map<String, dynamic>();
-//    data['installmentAmount'] = this.installmentAmount;
-//    data['mainCurrency'] = this.mainCurrency;
-//    data['interest'] = this.interest;
-//    data['kkdf'] = this.kkdf;
-//    data['bsmv'] = this.bsmv;
-//    data['mainRemainingMoney'] = this.mainRemainingMoney;
-//    return data;
-//  }
 
 }
