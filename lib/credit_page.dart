@@ -206,13 +206,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                 creditAmount =
                                                     double.parse(input);
                                               });
-                                            },/*
-                                            onChanged: (input) {
-                                              setState(() {
-                                                creditAmount =
-                                                    double.parse(input);
-                                              });
-                                            },*/
+                                            },
                                             validator: (String value){
                                               return validWarn(value);
                                             },
@@ -244,17 +238,10 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                             keyboardType: TextInputType.number,
                                             onSaved: (input) {
                                               interest = double.parse(input);
-                                            },/*
-                                            onChanged: (input) {
-                                              interest = double.parse(input);
-                                            },*/
+                                            },
                                             validator: (String value){
                                               return validWarn(value);
                                             },
-                                            /*
-                                            validator: (String value){
-                                              return value.isEmpty ? validatorWarning : null;
-                                            },*/
                                           ),
                                         ),
                                       ),
@@ -289,9 +276,6 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                   creditTermY = newValue;
                                                 });
                                               },
-                                              /*validator: (value){
-                                                return value == null ? validatorWarning : null;
-                                              },*/
                                               items: creditTermYearly
                                                   .map<DropdownMenuItem<int>>(
                                                       (int value) {
@@ -363,30 +347,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               onSaved: (input) {
                                                 setState(() {
                                                   kkdf = double.parse(input);
-                                                  /*if (input != null &&
-                                                      input != "" &&
-                                                      double.parse(input) >
-                                                          0.0) {
-                                                    kkdf = double.parse(input);
-                                                  }*/
                                                 });
                                               },
-                                              /*onChanged: (input) {
-                                                setState(() {
-                                                  if (input != null &&
-                                                      input != "" &&
-                                                      double.parse(input) >
-                                                          0.0) {
-                                                    kkdf = double.parse(input);
-                                                  }
-                                                });
-                                              },*/
                                               validator: (String value){
                                                 return validWarn(value);
-                                              },/*
-                                              validator: (String value){
-                                                return value.isEmpty ? validatorWarning : null;
-                                              },*/
+                                              },
                                             ),
                                           ),
                                         ),
@@ -426,30 +391,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               onSaved: (input) {
                                                 setState(() {
                                                   bsmv = double.parse(input);
-                                                  /*if (input != null &&
-                                                      input != "" &&
-                                                      double.parse(input) >
-                                                          0.0) {
-                                                    bsmv = double.parse(input);
-                                                  }*/
                                                 });
                                               },
-                                              /*onChanged: (input) {
-                                                setState(() {
-                                                  if (input != null &&
-                                                      input != "" &&
-                                                      double.parse(input) >
-                                                          0.0) {
-                                                    bsmv = double.parse(input);
-                                                  }
-                                                });
-                                              },*/
                                               validator: (String value){
                                                 return validWarn(value);
-                                              },/*
-                                              validator: (String value){
-                                                return value.isEmpty ? validatorWarning : null;
-                                              },*/
+                                              },
                                             ),
                                           ),
                                         ),
@@ -544,16 +490,9 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               creditAmount =
                                                   double.parse(input);
                                             },
-                                            /*onChanged: (input) {
-                                              creditAmount =
-                                                  double.parse(input);
-                                            },*/
                                             validator: (String value){
                                               return validWarn(value);
-                                            },/*
-                                            validator: (String value){
-                                              return value.isEmpty ? validatorWarning : null;
-                                            },*/
+                                            },
                                           ),
                                         ),
                                       ),
@@ -583,15 +522,9 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                             onSaved: (input) {
                                               interest = double.parse(input);
                                             },
-                                            /*onChanged: (input) {
-                                              interest = double.parse(input);
-                                            },*/
                                             validator: (String value){
                                               return validWarn(value);
-                                            },/*
-                                            validator: (String value){
-                                              return value.isEmpty ? validatorWarning : null;
-                                            },*/
+                                            },
                                           ),
                                         ),
                                       ),
@@ -697,30 +630,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               onSaved: (input) {
                                                 setState(() {
                                                   kkdf = double.parse(input);
-                                                  /*if (input != null &&
-                                                      input != "" &&
-                                                      double.parse(input) >
-                                                          0.0) {
-                                                    kkdf = double.parse(input);
-                                                  }*/
                                                 });
                                               },
-                                              /*onChanged: (input) {
-                                                setState(() {
-                                                  if (input != null &&
-                                                      input != "" &&
-                                                      double.parse(input) >
-                                                          0.0) {
-                                                    kkdf = double.parse(input);
-                                                  }
-                                                });
-                                              },*/
                                               validator: (String value){
                                                 return validWarn(value);
-                                              },/*
-                                              validator: (String value){
-                                                return value.isEmpty ? validatorWarning : null;
-                                              },*/
+                                              },
                                             ),
                                           ),
                                         ),
@@ -760,30 +674,11 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               onSaved: (input) {
                                                 setState(() {
                                                   bsmv = double.parse(input);
-                                                  /*if (input != null &&
-                                                      input != "" &&
-                                                      double.parse(input) >
-                                                          0.0) {
-                                                    bsmv = double.parse(input);
-                                                  }*/
                                                 });
                                               },
-                                             /* onChanged: (input) {
-                                                setState(() {
-                                                  if (input != null &&
-                                                      input != "" &&
-                                                      double.parse(input) >
-                                                          0.0) {
-                                                    bsmv = double.parse(input);
-                                                  }
-                                                });
-                                              },*/
                                               validator: (String value){
                                                 return validWarn(value);
-                                              },/*
-                                              validator: (String value){
-                                                return value.isEmpty ? validatorWarning : null;
-                                              },*/
+                                              },
                                             ),
                                           ),
                                         ),
