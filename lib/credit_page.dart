@@ -56,40 +56,9 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
   String validatorWarning2 = "Lütfen kullanılabilir değer girin!";
 
 
-
-  final bodyGlobalKey = GlobalKey();
-  final List<Widget> myTabs = [
-    Tab(text: 'auto short'),
-    Tab(text: 'auto long'),
-    Tab(text: 'fixed'),
-  ];
-  ScrollController _scrollController;
-  bool fixedScroll;
-
-  Widget _buildCarousel() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Container(
-          padding:
-          EdgeInsets.only(left: 10, right: 10, top: 10),
-          child: Text(
-            descriptionTitle,
-            style: TextStyle(fontSize: 16, color: Colors.black),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.all(10),
-          child: Text(description),
-        ),
-      ],
-    );
-  }
-
   @override
   void initState() {
     _tabController = new TabController(vsync: this, length: 2);
-    _scrollController = ScrollController();
 
     creditTermY = 12;
     creditTermM = 1;
@@ -102,769 +71,12 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
     }
 
     super.initState();
-
-    _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
-    _tabController.addListener(_smoothScrollToTop);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _scrollController.dispose();
     super.dispose();
-  }
-
-  _scrollListener() {
-    if (fixedScroll) {
-      _scrollController.jumpTo(0);
-    }
-  }
-
-  _smoothScrollToTop() {
-    _scrollController.animateTo(
-      0,
-      duration: Duration(microseconds: 300),
-      curve: Curves.ease,
-    );
-
-    setState(() {
-      fixedScroll = _tabController.index == 2;
-    });
-  }
-
-  _buildTabContext(int lineCount) => Container(
-    child: ListView.builder(
-      physics: const ClampingScrollPhysics(),
-      itemCount: lineCount,
-      itemBuilder: (BuildContext context, int index) {
-        return Text('some content');
-      },
-    ),
-  );
-
-  Widget nestedTabBar(){
-    return Container(
-      color: Colors.blueGrey,
-      child: Card(
-        elevation: 11,
-        margin: EdgeInsets.all(10),
-        child: Scaffold(
-          body: NestedScrollView(
-            controller: _scrollController,
-            headerSliverBuilder: (context, value) {
-              return [
-                SliverToBoxAdapter(child: _buildCarousel()),
-                SliverToBoxAdapter(
-                  child:  Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 1, color: Colors.grey.shade200),
-                      ),
-                      child: Container(
-                        //color: Colors.redAccent,
-                        height: 40,
-                        margin: EdgeInsets.all(10),
-                        child: TabBar(
-                          controller: _tabController,
-                          labelColor: Colors.black,
-                          unselectedLabelColor: Colors.black,
-                          indicator: UnderlineTabIndicator(
-                            borderSide: BorderSide(
-                              color: Colors.blue,
-                              width: 4.0,
-                            ),
-                            insets: EdgeInsets.fromLTRB(
-                                0.0, 0.0, 0.0, 40.0),
-                          ),
-                          tabs: <Widget>[
-                            Tab(
-                              text: tabFirstTitle,
-                            ),
-                            Tab(
-                              text: tabSecondTitle,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ];
-            },
-            body: Container(
-              height: contSize,
-              margin: EdgeInsets.only(
-                  left: 10, right: 10, bottom: 10),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: Colors.grey.shade200,
-                ),
-              ),
-              child: TabBarView(
-                controller: _tabController,
-                children: <Widget>[
-                  Tab(
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 10),
-                        // Kredi Tutarı input
-                        Flexible(
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 10, right: 10),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText:
-                                creditAmountInputLabelText,
-                                labelStyle: TextStyle(color: Colors.black54),
-                                border: OutlineInputBorder(),
-                                contentPadding:
-                                EdgeInsets.only(left: 10),
-                              ),
-                              keyboardType: TextInputType.number,
-                              onSaved: (input) {
-                                setState(() {
-                                  creditAmount =
-                                      double.parse(input);
-                                });
-                              },
-                              validator: (String value) {
-                                return validWarn(value);
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // Faiz input
-                        Flexible(
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 10, right: 10),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: interestInputLabelText,
-                                labelStyle: TextStyle(
-                                    color: Colors.black54),
-                                errorStyle: TextStyle(height: 0.05),
-                                border: OutlineInputBorder(),
-                                contentPadding:
-                                EdgeInsets.only(left: 10),
-                              ),
-                              keyboardType: TextInputType.number,
-                              onSaved: (input) {
-                                interest = double.parse(input);
-                              },
-                              validator: (String value) {
-                                return validWarn(value);
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // Vade input
-                        Flexible(
-                          child: Container(
-                            height: MediaQuery.of(context).size.height,
-                            width:
-                            MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButtonFormField<int>(
-                                hint: Padding(
-                                  padding:
-                                  EdgeInsets.only(left: 10),
-                                  child: Text(termDropDownText),
-                                ),
-                                value: creditTermY,
-                                elevation: 16,
-                                style: TextStyle(
-                                    color: Colors.black),
-                                onChanged: (int newValue) {
-                                  setState(() {
-                                    creditTermY = newValue;
-                                  });
-                                },
-                                items: creditTermYearly
-                                    .map<DropdownMenuItem<int>>(
-                                        (int value) {
-                                      return DropdownMenuItem<int>(
-                                        value: value,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 10,
-                                          ),
-                                          child: Text(
-                                              value.toString() +
-                                                  monthText),
-                                        ),
-                                      );
-                                    }).toList(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        // Gelişmiş Seçenek inputları
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.centerRight,
-                            child: FlatButton(
-                              child: Text(
-                                settingsButtonText,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.blueAccent),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  isVisible = !isVisible;
-                                  if (isVisible) {
-                                    contSize = 400.0;
-                                  } else {
-                                    contSize = 300.0;
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        // KKDF
-                        Visibility(
-                          visible: isVisible,
-                          child: Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  left: 10, right: 10),
-                              child: TextFormField(
-                                initialValue: kkdf.toString(),
-                                decoration: InputDecoration(
-                                  labelText: kkdfText,
-                                  labelStyle: TextStyle(
-                                      color: Colors.black54),
-                                  errorStyle: TextStyle(height: 0),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  contentPadding:
-                                  EdgeInsets.only(left: 10),
-                                ),
-                                keyboardType:
-                                TextInputType.number,
-                                onSaved: (input) {
-                                  setState(() {
-                                    kkdf = double.parse(input);
-                                  });
-                                },
-                                validator: (String value) {
-                                  return validWarn(value);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: isVisible,
-                          child: SizedBox(
-                            height: 10,
-                          ),
-                        ),
-                        // BSMV
-                        Visibility(
-                          visible: isVisible,
-                          child: Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  left: 10, right: 10),
-                              child: TextFormField(
-                                initialValue: bsmv.toString(),
-                                decoration: InputDecoration(
-                                  labelText: bsmvText,
-                                  labelStyle: TextStyle(
-                                      color: Colors.black54),
-                                  errorStyle: TextStyle(height: 0),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  contentPadding:
-                                  EdgeInsets.only(left: 10),
-                                ),
-                                keyboardType:
-                                TextInputType.number,
-                                onSaved: (input) {
-                                  setState(() {
-                                    bsmv = double.parse(input);
-                                  });
-                                },
-                                validator: (String value) {
-                                  return validWarn(value);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        // Hesaplama Butonu
-                        Flexible(
-                          child: Container(
-                            width:
-                            MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                            ),
-                            color: Colors.blue,
-                            child: FlatButton(
-                              child: Text(
-                                firstCalculatorButtonText,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              onPressed: () {
-                                if (_formKey.currentState
-                                    .validate()) {
-                                  _formKey.currentState.save();
-                                  calculators(creditTermY).then(
-                                          (value) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TablePage(
-                                                      creditTableList:
-                                                      creditModelList,
-                                                      creditAmount:
-                                                      creditAmount,
-                                                      creditTerm:
-                                                      creditTermY,
-                                                      interest:
-                                                      interest,
-                                                      bsmv: bsmv,
-                                                      kkdf: kkdf,
-                                                      installment:
-                                                      installment,
-                                                    )));
-                                      }, onError: (error) {});
-                                } else {
-                                  setState(() {
-                                    _autovalidate =
-                                    true; //enable realtime validation
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                      ],
-                    ),
-                  ),
-                  Tab(
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 10),
-                        // Kredi Tutarı input
-                        Flexible(
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 10, right: 10),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText:
-                                creditAmountInputLabelText,
-                                labelStyle: TextStyle(
-                                    color: Colors.black54),
-                                errorStyle: TextStyle(height: 0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                contentPadding:
-                                EdgeInsets.only(left: 10),
-                              ),
-                              keyboardType: TextInputType.number,
-                              onSaved: (input) {
-                                creditAmount =
-                                    double.parse(input);
-                              },
-                              validator: (String value) {
-                                return validWarn(value);
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // Faiz input
-                        Flexible(
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 10, right: 10),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: interestInputLabelText,
-                                labelStyle: TextStyle(
-                                    color: Colors.black54),
-                                errorStyle: TextStyle(height: 0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                ),
-                                contentPadding:
-                                EdgeInsets.only(left: 10),
-                              ),
-                              keyboardType: TextInputType.number,
-                              onSaved: (input) {
-                                interest = double.parse(input);
-                              },
-                              validator: (String value) {
-                                return validWarn(value);
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // Vade input
-                        Flexible(
-                          child: Container(
-                            width:
-                            MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 1,
-                                  color: Colors.grey.shade200),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButtonFormField<int>(
-                                hint: Padding(
-                                  padding:
-                                  EdgeInsets.only(left: 10),
-                                  child: Text(termDropDownText),
-                                ),
-                                value: creditTermM,
-                                elevation: 16,
-                                style: TextStyle(
-                                    color: Colors.black),
-                                onChanged: (int newValue) {
-                                  setState(() {
-                                    creditTermM = newValue;
-                                  });
-                                },
-                                items: creditTermMonthly
-                                    .map<DropdownMenuItem<int>>(
-                                        (int value) {
-                                      return DropdownMenuItem<int>(
-                                        value: value,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 10,
-                                          ),
-                                          child: Text(
-                                              value.toString() +
-                                                  monthText),
-                                        ),
-                                      );
-                                    }).toList(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.centerRight,
-                            child: FlatButton(
-                              child: Text(
-                                settingsButtonText,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.blueAccent),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  isVisible = !isVisible;
-                                  if (isVisible) {
-                                    contSize = 440.0;
-                                  } else {
-                                    contSize = 320.0;
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: isVisible,
-                          child: Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  left: 10, right: 10),
-                              child: TextFormField(
-                                initialValue: kkdf.toString(),
-                                decoration: InputDecoration(
-                                  labelText: kkdfText,
-                                  labelStyle: TextStyle(
-                                      color: Colors.black54),
-                                  errorStyle: TextStyle(height: 0),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  contentPadding:
-                                  EdgeInsets.only(left: 10),
-                                ),
-                                keyboardType:
-                                TextInputType.number,
-                                onSaved: (input) {
-                                  setState(() {
-                                    kkdf = double.parse(input);
-                                  });
-                                },
-                                validator: (String value) {
-                                  return validWarn(value);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: isVisible,
-                          child: SizedBox(
-                            height: 10,
-                          ),
-                        ),
-                        Visibility(
-                          visible: isVisible,
-                          child: Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  left: 10, right: 10),
-                              child: TextFormField(
-                                initialValue: bsmv.toString(),
-                                decoration: InputDecoration(
-                                  labelText: bsmvText,
-                                  labelStyle: TextStyle(
-                                      color: Colors.black54),
-                                  errorStyle: TextStyle(height: 0),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                                  ),
-                                  contentPadding:
-                                  EdgeInsets.only(left: 10),
-                                ),
-                                keyboardType:
-                                TextInputType.number,
-                                onSaved: (input) {
-                                  setState(() {
-                                    bsmv = double.parse(input);
-                                  });
-                                },
-                                validator: (String value) {
-                                  return validWarn(value);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Flexible(
-                          child: Container(
-                            width:
-                            MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                            ),
-                            color: Colors.blue,
-                            child: FlatButton(
-                              child: Text(
-                                secondCalculatorButtonText,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              onPressed: () {
-                                if (_formKey.currentState
-                                    .validate()) {
-                                  _formKey.currentState.save();
-                                  calculators(creditTermM).then(
-                                          (value) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TablePage(
-                                                      creditTableList:
-                                                      creditModelList,
-                                                      creditAmount:
-                                                      creditAmount,
-                                                      creditTerm:
-                                                      creditTermM,
-                                                      interest:
-                                                      interest,
-                                                      bsmv: bsmv,
-                                                      kkdf: kkdf,
-                                                      installment:
-                                                      installment,
-                                                    )));
-                                      }, onError: (error) {});
-                                } else {
-                                  setState(() {
-                                    _autovalidate = true;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -872,7 +84,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
     return Form(
       key: _formKey,
       autovalidate: _autovalidate,
-      child: nestedTabBar(),
+      child: tabBar(),
     );
   }
 
@@ -951,6 +163,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
+                          // Tab bar elemanları
                           Container(
                             height: contSize,
                             margin: EdgeInsets.only(
@@ -966,6 +179,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                               children: <Widget>[
                                 Tab(
                                   child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       SizedBox(height: 10),
                                       // Kredi Tutarı input
@@ -978,7 +192,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               labelText:
                                               creditAmountInputLabelText,
                                               labelStyle: TextStyle(color: Colors.black54),
-                                              errorStyle: TextStyle(height: 0.0,fontSize: 10),
+                                              errorStyle: TextStyle(height: 0.02,fontSize: 10),
                                               border: OutlineInputBorder(),
                                               contentPadding:
                                               EdgeInsets.only(left: 10),
@@ -1007,7 +221,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               labelText: interestInputLabelText,
                                               labelStyle: TextStyle(
                                                   color: Colors.black54),
-                                              errorStyle: TextStyle(height: 0.0,fontSize: 10),
+                                              errorStyle: TextStyle(height: 0.04,fontSize: 10),
                                               border: OutlineInputBorder(),
                                               contentPadding:
                                               EdgeInsets.only(left: 10),
@@ -1083,9 +297,9 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               setState(() {
                                                 isVisible = !isVisible;
                                                 if (isVisible) {
-                                                  contSize = 440.0;
+                                                  contSize = 400.0;
                                                 } else {
-                                                  contSize = 380.0;
+                                                  contSize = 300.0;
                                                 }
                                               });
                                             },
@@ -1105,31 +319,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                 labelText: kkdfText,
                                                 labelStyle: TextStyle(
                                                     color: Colors.black54),
-                                                errorStyle: TextStyle(height: 0),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                disabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                border: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
+                                                errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                border: OutlineInputBorder(),
                                                 contentPadding:
                                                 EdgeInsets.only(left: 10),
                                               ),
@@ -1166,31 +357,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                 labelText: bsmvText,
                                                 labelStyle: TextStyle(
                                                     color: Colors.black54),
-                                                errorStyle: TextStyle(height: 0),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                disabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                border: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
+                                                errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                border: OutlineInputBorder(),
                                                 contentPadding:
                                                 EdgeInsets.only(left: 10),
                                               ),
@@ -1256,8 +424,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                     }, onError: (error) {});
                                               } else {
                                                 setState(() {
-                                                  _autovalidate =
-                                                  true; //enable realtime validation
+                                                  _autovalidate = true;
                                                 });
                                               }
                                             },
@@ -1283,31 +450,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               creditAmountInputLabelText,
                                               labelStyle: TextStyle(
                                                   color: Colors.black54),
-                                              errorStyle: TextStyle(height: 0),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              focusedErrorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              disabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
+                                              errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                              border: OutlineInputBorder(),
                                               contentPadding:
                                               EdgeInsets.only(left: 10),
                                             ),
@@ -1333,31 +477,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                               labelText: interestInputLabelText,
                                               labelStyle: TextStyle(
                                                   color: Colors.black54),
-                                              errorStyle: TextStyle(height: 0),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              focusedErrorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              disabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                borderRadius: BorderRadius.all(Radius.circular(0)),
-                                              ),
+                                              errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                              border: OutlineInputBorder(),
                                               contentPadding:
                                               EdgeInsets.only(left: 10),
                                             ),
@@ -1456,31 +577,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                 labelText: kkdfText,
                                                 labelStyle: TextStyle(
                                                     color: Colors.black54),
-                                                errorStyle: TextStyle(height: 0),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                disabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                border: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
+                                                errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                border: OutlineInputBorder(),
                                                 contentPadding:
                                                 EdgeInsets.only(left: 10),
                                               ),
@@ -1516,31 +614,8 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                                                 labelText: bsmvText,
                                                 labelStyle: TextStyle(
                                                     color: Colors.black54),
-                                                errorStyle: TextStyle(height: 0),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.red.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                disabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
-                                                border: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.grey.shade200,width: 1),
-                                                  borderRadius: BorderRadius.all(Radius.circular(0)),
-                                                ),
+                                                errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                border: OutlineInputBorder(),
                                                 contentPadding:
                                                 EdgeInsets.only(left: 10),
                                               ),
@@ -1619,7 +694,6 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          // Tab bar elemanları
                         ],
                       ),
                     ),
