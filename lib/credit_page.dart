@@ -14,7 +14,7 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
   // Widget değişkenleri
   var _formKey = GlobalKey<FormState>();
   bool _autovalidate = false;
-  bool _isValidate = true;
+  bool isSelectedLeft = true;
   TabController _tabController;
   bool isVisible = false;
   double contSize = 300.0;
@@ -89,620 +89,652 @@ class _CreditPageState extends State<CreditPage> with TickerProviderStateMixin {
   }
 
   Widget tabBar() {
-    return Container(
-      color: Colors.white,
-      child: ListView(
-        children: <Widget>[
-          DefaultTabController(
-            length: 2,
-            child: Card(
-              margin: EdgeInsets.all(10),
-              elevation: 5,
-              child: InkWell(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                },
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                child: Column(
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
+      body: Container(
+        color: Colors.white,
+        child: ListView(
+          children: <Widget>[
+            SingleChildScrollView(
+              reverse: true,
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: DefaultTabController(
+                length: 2,
+                child: Card(
+                  margin: EdgeInsets.all(10),
+                  elevation: 5,
+                  child: InkWell(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    },
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    child: Column(
                       children: <Widget>[
-                        Container(
-                          padding:
-                              EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: Text(
-                            descriptionTitle,
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text(description),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          // Tab bar butonları
-                          Padding(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 1, color: Colors.grey.shade200),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding:
+                                  EdgeInsets.only(left: 10, right: 10, top: 10),
+                              child: Text(
+                                descriptionTitle,
+                                style: TextStyle(fontSize: 16, color: Colors.black),
                               ),
-                              child: Container(
-                                //color: Colors.redAccent,
-                                height: 40,
-                                margin: EdgeInsets.all(10),
-                                child: TabBar(
-                                  controller: _tabController,
-                                  labelColor: Colors.black,
-                                  unselectedLabelColor: Colors.black,
-                                  indicator: UnderlineTabIndicator(
-                                    borderSide: BorderSide(
-                                      color: Colors.blue,
-                                      width: 4.0,
-                                    ),
-                                    insets: EdgeInsets.fromLTRB(
-                                        0.0, 0.0, 0.0, 40.0),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: Text(description),
+                            ),
+                            SizedBox(height: 10,),
+                          ],
+                        ),
+                        Container(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              // Tab bar butonları
+                              Padding(
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 1, color: Colors.white),
                                   ),
-                                  tabs: <Widget>[
+                                  child: Container(
+                                    height: 40,
+                                    margin: EdgeInsets.only(left: 10,right: 10),
+                                    child: Stack(
+                                      fit: StackFit.passthrough,
+                                      alignment: isSelectedLeft ? Alignment.centerRight : Alignment.centerLeft,
+                                      children: <Widget>[
+                                        Container(
+                                          width: MediaQuery.of(context).size.width/2.5,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade400,
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(11)
+                                            ),
+                                            /*border: Border(
+                                              top: BorderSide(color: Colors.grey.shade400, width: 40.0),
+                                            ),*/
+                                          ),
+                                        ),
+                                        TabBar(
+                                          controller: _tabController,
+                                          labelColor: Colors.black,
+                                          unselectedLabelColor: Colors.black,
+                                          indicator: UnderlineTabIndicator(
+                                            borderSide: BorderSide(
+                                              color: Colors.blue,
+                                              width: 4.0,
+                                            ),
+                                            insets: EdgeInsets.fromLTRB(
+                                                0.0, 0.0, 0.0, 40.0),
+                                          ),
+                                          onTap: (index){
+                                            setState(() {
+                                              isSelectedLeft = index == 0 ? true : false;
+                                            });
+                                          },
+                                          tabs: <Widget>[
+                                            Tab(
+                                              text: tabFirstTitle,
+                                            ),
+                                            Tab(
+                                              text: tabSecondTitle,
+                                            )
+                                          ],
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Tab bar elemanları
+                              Container(
+                                height: contSize,
+                                margin: EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey.shade200,
+                                  ),
+                                ),
+                                child: TabBarView(
+                                  controller: _tabController,
+                                  children: <Widget>[
                                     Tab(
-                                      text: tabFirstTitle,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          SizedBox(height: 10),
+                                          // Kredi Tutarı input
+                                          Flexible(
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 10, right: 10),
+                                              child: TextFormField(
+                                                decoration: InputDecoration(
+                                                  labelText:
+                                                  creditAmountInputLabelText,
+                                                  labelStyle: TextStyle(color: Colors.black54),
+                                                  errorStyle: TextStyle(height: 0.02,fontSize: 10),
+                                                  border: OutlineInputBorder(),
+                                                  contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                                ),
+                                                keyboardType: TextInputType.number,
+                                                onSaved: (input) {
+                                                  setState(() {
+                                                    creditAmount =
+                                                        double.parse(input);
+                                                  });
+                                                },
+                                                validator: (String value) {
+                                                  return validWarn(value);
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          // Faiz input
+                                          Flexible(
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 10, right: 10),
+                                              child: TextFormField(
+                                                decoration: InputDecoration(
+                                                  labelText: interestInputLabelText,
+                                                  labelStyle: TextStyle(
+                                                      color: Colors.black54),
+                                                  errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                  border: OutlineInputBorder(),
+                                                  contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                                ),
+                                                keyboardType: TextInputType.number,
+                                                onSaved: (input) {
+                                                  interest = double.parse(input);
+                                                },
+                                                validator: (String value) {
+                                                  return validWarn(value);
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          // Vade input
+                                          Flexible(
+                                            child: Container(
+                                              height: MediaQuery.of(context).size.height,
+                                              width:
+                                              MediaQuery.of(context).size.width,
+                                              margin: EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                              ),
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButtonFormField<int>(
+                                                  hint: Padding(
+                                                    padding:
+                                                    EdgeInsets.only(left: 10),
+                                                    child: Text(termDropDownText),
+                                                  ),
+                                                  value: creditTermY,
+                                                  elevation: 16,
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                  onChanged: (int newValue) {
+                                                    setState(() {
+                                                      creditTermY = newValue;
+                                                    });
+                                                  },
+                                                  items: creditTermYearly
+                                                      .map<DropdownMenuItem<int>>(
+                                                          (int value) {
+                                                        return DropdownMenuItem<int>(
+                                                          value: value,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.only(
+                                                              left: 10,
+                                                            ),
+                                                            child: Text(
+                                                                value.toString() +
+                                                                    monthText),
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          // Gelişmiş Seçenek inputları
+                                          Flexible(
+                                            child: Container(
+                                              alignment: Alignment.centerRight,
+                                              child: FlatButton(
+                                                child: Text(
+                                                  settingsButtonText,
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.blueAccent),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    isVisible = !isVisible;
+                                                    if (isVisible) {
+                                                      contSize = 400.0;
+                                                    } else {
+                                                      contSize = 300.0;
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          // KKDF
+                                          Visibility(
+                                            visible: isVisible,
+                                            child: Flexible(
+                                              child: Container(
+                                                margin: EdgeInsets.only(
+                                                    left: 10, right: 10),
+                                                child: TextFormField(
+                                                  initialValue: kkdf.toString(),
+                                                  decoration: InputDecoration(
+                                                    labelText: kkdfText,
+                                                    labelStyle: TextStyle(
+                                                        color: Colors.black54),
+                                                    errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                    border: OutlineInputBorder(),
+                                                    contentPadding:
+                                                    EdgeInsets.only(left: 10),
+                                                  ),
+                                                  keyboardType:
+                                                  TextInputType.number,
+                                                  onSaved: (input) {
+                                                    setState(() {
+                                                      kkdf = double.parse(input);
+                                                    });
+                                                  },
+                                                  validator: (String value) {
+                                                    return validWarn(value);
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: isVisible,
+                                            child: SizedBox(
+                                              height: 10,
+                                            ),
+                                          ),
+                                          // BSMV
+                                          Visibility(
+                                            visible: isVisible,
+                                            child: Flexible(
+                                              child: Container(
+                                                margin: EdgeInsets.only(
+                                                    left: 10, right: 10),
+                                                child: TextFormField(
+                                                  initialValue: bsmv.toString(),
+                                                  decoration: InputDecoration(
+                                                    labelText: bsmvText,
+                                                    labelStyle: TextStyle(
+                                                        color: Colors.black54),
+                                                    errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                    border: OutlineInputBorder(),
+                                                    contentPadding:
+                                                    EdgeInsets.only(left: 10),
+                                                  ),
+                                                  keyboardType:
+                                                  TextInputType.number,
+                                                  onSaved: (input) {
+                                                    setState(() {
+                                                      bsmv = double.parse(input);
+                                                    });
+                                                  },
+                                                  validator: (String value) {
+                                                    return validWarn(value);
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          // Hesaplama Butonu
+                                          Flexible(
+                                            child: Container(
+                                              width:
+                                              MediaQuery.of(context).size.width,
+                                              margin: EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                              ),
+                                              color: Colors.blue,
+                                              child: FlatButton(
+                                                child: Text(
+                                                  firstCalculatorButtonText,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  if (_formKey.currentState
+                                                      .validate()) {
+                                                    _formKey.currentState.save();
+                                                    calculators(creditTermY).then(
+                                                            (value) {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      TablePage(
+                                                                        creditTableList:
+                                                                        creditModelList,
+                                                                        creditAmount:
+                                                                        creditAmount,
+                                                                        creditTerm:
+                                                                        creditTermY,
+                                                                        interest:
+                                                                        interest,
+                                                                        bsmv: bsmv,
+                                                                        kkdf: kkdf,
+                                                                        installment:
+                                                                        installment,
+                                                                      )));
+                                                        }, onError: (error) {});
+                                                  } else {
+                                                    setState(() {
+                                                      _autovalidate = true;
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                        ],
+                                      ),
                                     ),
                                     Tab(
-                                      text: tabSecondTitle,
-                                    )
+                                      child: Column(
+                                        children: <Widget>[
+                                          SizedBox(height: 10),
+                                          // Kredi Tutarı input
+                                          Flexible(
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 10, right: 10),
+                                              child: TextFormField(
+                                                decoration: InputDecoration(
+                                                  labelText:
+                                                  creditAmountInputLabelText,
+                                                  labelStyle: TextStyle(
+                                                      color: Colors.black54),
+                                                  errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                  border: OutlineInputBorder(),
+                                                  contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                                ),
+                                                keyboardType: TextInputType.number,
+                                                onSaved: (input) {
+                                                  creditAmount =
+                                                      double.parse(input);
+                                                },
+                                                validator: (String value) {
+                                                  return validWarn(value);
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          // Faiz input
+                                          Flexible(
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 10, right: 10),
+                                              child: TextFormField(
+                                                decoration: InputDecoration(
+                                                  labelText: interestInputLabelText,
+                                                  labelStyle: TextStyle(
+                                                      color: Colors.black54),
+                                                  errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                  border: OutlineInputBorder(),
+                                                  contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                                ),
+                                                keyboardType: TextInputType.number,
+                                                onSaved: (input) {
+                                                  interest = double.parse(input);
+                                                },
+                                                validator: (String value) {
+                                                  return validWarn(value);
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          // Vade input
+                                          Flexible(
+                                            child: Container(
+                                              width:
+                                              MediaQuery.of(context).size.width,
+                                              margin: EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.grey.shade200),
+                                              ),
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButtonFormField<int>(
+                                                  hint: Padding(
+                                                    padding:
+                                                    EdgeInsets.only(left: 10),
+                                                    child: Text(termDropDownText),
+                                                  ),
+                                                  value: creditTermM,
+                                                  elevation: 16,
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                  onChanged: (int newValue) {
+                                                    setState(() {
+                                                      creditTermM = newValue;
+                                                    });
+                                                  },
+                                                  items: creditTermMonthly
+                                                      .map<DropdownMenuItem<int>>(
+                                                          (int value) {
+                                                        return DropdownMenuItem<int>(
+                                                          value: value,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.only(
+                                                              left: 10,
+                                                            ),
+                                                            child: Text(
+                                                                value.toString() +
+                                                                    monthText),
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: Container(
+                                              alignment: Alignment.centerRight,
+                                              child: FlatButton(
+                                                child: Text(
+                                                  settingsButtonText,
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.blueAccent),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    isVisible = !isVisible;
+                                                    if (isVisible) {
+                                                      contSize = 400.0;
+                                                    } else {
+                                                      contSize = 300.0;
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: isVisible,
+                                            child: Flexible(
+                                              child: Container(
+                                                margin: EdgeInsets.only(
+                                                    left: 10, right: 10),
+                                                child: TextFormField(
+                                                  initialValue: kkdf.toString(),
+                                                  decoration: InputDecoration(
+                                                    labelText: kkdfText,
+                                                    labelStyle: TextStyle(
+                                                        color: Colors.black54),
+                                                    errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                    border: OutlineInputBorder(),
+                                                    contentPadding:
+                                                    EdgeInsets.only(left: 10),
+                                                  ),
+                                                  keyboardType:
+                                                  TextInputType.number,
+                                                  onSaved: (input) {
+                                                    setState(() {
+                                                      kkdf = double.parse(input);
+                                                    });
+                                                  },
+                                                  validator: (String value) {
+                                                    return validWarn(value);
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: isVisible,
+                                            child: SizedBox(
+                                              height: 10,
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: isVisible,
+                                            child: Flexible(
+                                              child: Container(
+                                                margin: EdgeInsets.only(
+                                                    left: 10, right: 10),
+                                                child: TextFormField(
+                                                  initialValue: bsmv.toString(),
+                                                  decoration: InputDecoration(
+                                                    labelText: bsmvText,
+                                                    labelStyle: TextStyle(
+                                                        color: Colors.black54),
+                                                    errorStyle: TextStyle(height: 0.04,fontSize: 10),
+                                                    border: OutlineInputBorder(),
+                                                    contentPadding:
+                                                    EdgeInsets.only(left: 10),
+                                                  ),
+                                                  keyboardType:
+                                                  TextInputType.number,
+                                                  onSaved: (input) {
+                                                    setState(() {
+                                                      bsmv = double.parse(input);
+                                                    });
+                                                  },
+                                                  validator: (String value) {
+                                                    return validWarn(value);
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Flexible(
+                                            child: Container(
+                                              width:
+                                              MediaQuery.of(context).size.width,
+                                              margin: EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                              ),
+                                              color: Colors.blue,
+                                              child: FlatButton(
+                                                child: Text(
+                                                  secondCalculatorButtonText,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  if (_formKey.currentState
+                                                      .validate()) {
+                                                    _formKey.currentState.save();
+                                                    calculators(creditTermM).then(
+                                                            (value) {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      TablePage(
+                                                                        creditTableList:
+                                                                        creditModelList,
+                                                                        creditAmount:
+                                                                        creditAmount,
+                                                                        creditTerm:
+                                                                        creditTermM,
+                                                                        interest:
+                                                                        interest,
+                                                                        bsmv: bsmv,
+                                                                        kkdf: kkdf,
+                                                                        installment:
+                                                                        installment,
+                                                                      )));
+                                                        }, onError: (error) {});
+                                                  } else {
+                                                    setState(() {
+                                                      _autovalidate = true;
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                          // Tab bar elemanları
-                          Container(
-                            height: contSize,
-                            margin: EdgeInsets.only(
-                                left: 10, right: 10, bottom: 10),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.grey.shade200,
-                              ),
-                            ),
-                            child: TabBarView(
-                              controller: _tabController,
-                              children: <Widget>[
-                                Tab(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      SizedBox(height: 10),
-                                      // Kredi Tutarı input
-                                      Flexible(
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              left: 10, right: 10),
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                              labelText:
-                                              creditAmountInputLabelText,
-                                              labelStyle: TextStyle(color: Colors.black54),
-                                              errorStyle: TextStyle(height: 0.02,fontSize: 10),
-                                              border: OutlineInputBorder(),
-                                              contentPadding:
-                                              EdgeInsets.only(left: 10),
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                            onSaved: (input) {
-                                              setState(() {
-                                                creditAmount =
-                                                    double.parse(input);
-                                              });
-                                            },
-                                            validator: (String value) {
-                                              return validWarn(value);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      // Faiz input
-                                      Flexible(
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              left: 10, right: 10),
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                              labelText: interestInputLabelText,
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black54),
-                                              errorStyle: TextStyle(height: 0.04,fontSize: 10),
-                                              border: OutlineInputBorder(),
-                                              contentPadding:
-                                              EdgeInsets.only(left: 10),
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                            onSaved: (input) {
-                                              interest = double.parse(input);
-                                            },
-                                            validator: (String value) {
-                                              return validWarn(value);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      // Vade input
-                                      Flexible(
-                                        child: Container(
-                                          height: MediaQuery.of(context).size.height,
-                                          width:
-                                          MediaQuery.of(context).size.width,
-                                          margin: EdgeInsets.only(
-                                            left: 10,
-                                            right: 10,
-                                          ),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButtonFormField<int>(
-                                              hint: Padding(
-                                                padding:
-                                                EdgeInsets.only(left: 10),
-                                                child: Text(termDropDownText),
-                                              ),
-                                              value: creditTermY,
-                                              elevation: 16,
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                              onChanged: (int newValue) {
-                                                setState(() {
-                                                  creditTermY = newValue;
-                                                });
-                                              },
-                                              items: creditTermYearly
-                                                  .map<DropdownMenuItem<int>>(
-                                                      (int value) {
-                                                    return DropdownMenuItem<int>(
-                                                      value: value,
-                                                      child: Padding(
-                                                        padding: EdgeInsets.only(
-                                                          left: 10,
-                                                        ),
-                                                        child: Text(
-                                                            value.toString() +
-                                                                monthText),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      // Gelişmiş Seçenek inputları
-                                      Flexible(
-                                        child: Container(
-                                          alignment: Alignment.centerRight,
-                                          child: FlatButton(
-                                            child: Text(
-                                              settingsButtonText,
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.blueAccent),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                isVisible = !isVisible;
-                                                if (isVisible) {
-                                                  contSize = 400.0;
-                                                } else {
-                                                  contSize = 300.0;
-                                                }
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      // KKDF
-                                      Visibility(
-                                        visible: isVisible,
-                                        child: Flexible(
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                left: 10, right: 10),
-                                            child: TextFormField(
-                                              initialValue: kkdf.toString(),
-                                              decoration: InputDecoration(
-                                                labelText: kkdfText,
-                                                labelStyle: TextStyle(
-                                                    color: Colors.black54),
-                                                errorStyle: TextStyle(height: 0.04,fontSize: 10),
-                                                border: OutlineInputBorder(),
-                                                contentPadding:
-                                                EdgeInsets.only(left: 10),
-                                              ),
-                                              keyboardType:
-                                              TextInputType.number,
-                                              onSaved: (input) {
-                                                setState(() {
-                                                  kkdf = double.parse(input);
-                                                });
-                                              },
-                                              validator: (String value) {
-                                                return validWarn(value);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible: isVisible,
-                                        child: SizedBox(
-                                          height: 10,
-                                        ),
-                                      ),
-                                      // BSMV
-                                      Visibility(
-                                        visible: isVisible,
-                                        child: Flexible(
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                left: 10, right: 10),
-                                            child: TextFormField(
-                                              initialValue: bsmv.toString(),
-                                              decoration: InputDecoration(
-                                                labelText: bsmvText,
-                                                labelStyle: TextStyle(
-                                                    color: Colors.black54),
-                                                errorStyle: TextStyle(height: 0.04,fontSize: 10),
-                                                border: OutlineInputBorder(),
-                                                contentPadding:
-                                                EdgeInsets.only(left: 10),
-                                              ),
-                                              keyboardType:
-                                              TextInputType.number,
-                                              onSaved: (input) {
-                                                setState(() {
-                                                  bsmv = double.parse(input);
-                                                });
-                                              },
-                                              validator: (String value) {
-                                                return validWarn(value);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      // Hesaplama Butonu
-                                      Flexible(
-                                        child: Container(
-                                          width:
-                                          MediaQuery.of(context).size.width,
-                                          margin: EdgeInsets.only(
-                                            left: 10,
-                                            right: 10,
-                                          ),
-                                          color: Colors.blue,
-                                          child: FlatButton(
-                                            child: Text(
-                                              firstCalculatorButtonText,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              if (_formKey.currentState
-                                                  .validate()) {
-                                                _formKey.currentState.save();
-                                                calculators(creditTermY).then(
-                                                        (value) {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  TablePage(
-                                                                    creditTableList:
-                                                                    creditModelList,
-                                                                    creditAmount:
-                                                                    creditAmount,
-                                                                    creditTerm:
-                                                                    creditTermY,
-                                                                    interest:
-                                                                    interest,
-                                                                    bsmv: bsmv,
-                                                                    kkdf: kkdf,
-                                                                    installment:
-                                                                    installment,
-                                                                  )));
-                                                    }, onError: (error) {});
-                                              } else {
-                                                setState(() {
-                                                  _autovalidate = true;
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                    ],
-                                  ),
-                                ),
-                                Tab(
-                                  child: Column(
-                                    children: <Widget>[
-                                      SizedBox(height: 10),
-                                      // Kredi Tutarı input
-                                      Flexible(
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              left: 10, right: 10),
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                              labelText:
-                                              creditAmountInputLabelText,
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black54),
-                                              errorStyle: TextStyle(height: 0.04,fontSize: 10),
-                                              border: OutlineInputBorder(),
-                                              contentPadding:
-                                              EdgeInsets.only(left: 10),
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                            onSaved: (input) {
-                                              creditAmount =
-                                                  double.parse(input);
-                                            },
-                                            validator: (String value) {
-                                              return validWarn(value);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      // Faiz input
-                                      Flexible(
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              left: 10, right: 10),
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                              labelText: interestInputLabelText,
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black54),
-                                              errorStyle: TextStyle(height: 0.04,fontSize: 10),
-                                              border: OutlineInputBorder(),
-                                              contentPadding:
-                                              EdgeInsets.only(left: 10),
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                            onSaved: (input) {
-                                              interest = double.parse(input);
-                                            },
-                                            validator: (String value) {
-                                              return validWarn(value);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      // Vade input
-                                      Flexible(
-                                        child: Container(
-                                          width:
-                                          MediaQuery.of(context).size.width,
-                                          margin: EdgeInsets.only(
-                                            left: 10,
-                                            right: 10,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.grey.shade200),
-                                          ),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButtonFormField<int>(
-                                              hint: Padding(
-                                                padding:
-                                                EdgeInsets.only(left: 10),
-                                                child: Text(termDropDownText),
-                                              ),
-                                              value: creditTermM,
-                                              elevation: 16,
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                              onChanged: (int newValue) {
-                                                setState(() {
-                                                  creditTermM = newValue;
-                                                });
-                                              },
-                                              items: creditTermMonthly
-                                                  .map<DropdownMenuItem<int>>(
-                                                      (int value) {
-                                                    return DropdownMenuItem<int>(
-                                                      value: value,
-                                                      child: Padding(
-                                                        padding: EdgeInsets.only(
-                                                          left: 10,
-                                                        ),
-                                                        child: Text(
-                                                            value.toString() +
-                                                                monthText),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Container(
-                                          alignment: Alignment.centerRight,
-                                          child: FlatButton(
-                                            child: Text(
-                                              settingsButtonText,
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.blueAccent),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                isVisible = !isVisible;
-                                                if (isVisible) {
-                                                  contSize = 400.0;
-                                                } else {
-                                                  contSize = 300.0;
-                                                }
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible: isVisible,
-                                        child: Flexible(
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                left: 10, right: 10),
-                                            child: TextFormField(
-                                              initialValue: kkdf.toString(),
-                                              decoration: InputDecoration(
-                                                labelText: kkdfText,
-                                                labelStyle: TextStyle(
-                                                    color: Colors.black54),
-                                                errorStyle: TextStyle(height: 0.04,fontSize: 10),
-                                                border: OutlineInputBorder(),
-                                                contentPadding:
-                                                EdgeInsets.only(left: 10),
-                                              ),
-                                              keyboardType:
-                                              TextInputType.number,
-                                              onSaved: (input) {
-                                                setState(() {
-                                                  kkdf = double.parse(input);
-                                                });
-                                              },
-                                              validator: (String value) {
-                                                return validWarn(value);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible: isVisible,
-                                        child: SizedBox(
-                                          height: 10,
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible: isVisible,
-                                        child: Flexible(
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                left: 10, right: 10),
-                                            child: TextFormField(
-                                              initialValue: bsmv.toString(),
-                                              decoration: InputDecoration(
-                                                labelText: bsmvText,
-                                                labelStyle: TextStyle(
-                                                    color: Colors.black54),
-                                                errorStyle: TextStyle(height: 0.04,fontSize: 10),
-                                                border: OutlineInputBorder(),
-                                                contentPadding:
-                                                EdgeInsets.only(left: 10),
-                                              ),
-                                              keyboardType:
-                                              TextInputType.number,
-                                              onSaved: (input) {
-                                                setState(() {
-                                                  bsmv = double.parse(input);
-                                                });
-                                              },
-                                              validator: (String value) {
-                                                return validWarn(value);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Flexible(
-                                        child: Container(
-                                          width:
-                                          MediaQuery.of(context).size.width,
-                                          margin: EdgeInsets.only(
-                                            left: 10,
-                                            right: 10,
-                                          ),
-                                          color: Colors.blue,
-                                          child: FlatButton(
-                                            child: Text(
-                                              secondCalculatorButtonText,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              if (_formKey.currentState
-                                                  .validate()) {
-                                                _formKey.currentState.save();
-                                                calculators(creditTermM).then(
-                                                        (value) {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  TablePage(
-                                                                    creditTableList:
-                                                                    creditModelList,
-                                                                    creditAmount:
-                                                                    creditAmount,
-                                                                    creditTerm:
-                                                                    creditTermM,
-                                                                    interest:
-                                                                    interest,
-                                                                    bsmv: bsmv,
-                                                                    kkdf: kkdf,
-                                                                    installment:
-                                                                    installment,
-                                                                  )));
-                                                    }, onError: (error) {});
-                                              } else {
-                                                setState(() {
-                                                  _autovalidate = true;
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
