@@ -170,9 +170,6 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                             color: Colors.grey.shade400,
                                             borderRadius: BorderRadius.vertical(
                                                 top: Radius.circular(11)),
-                                            /*border: Border(
-                                              top: BorderSide(color: Colors.grey.shade400, width: 40.0),
-                                            ),*/
                                           ),
                                         ),
                                         TabBar(
