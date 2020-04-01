@@ -1,6 +1,6 @@
 name: flutter_loan_calculator
 description: A new Flutter package which helps developers in creating loan calculator of their app.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/eflatunyazilim/Flutter-Loan-Calculator
 
 environment:
