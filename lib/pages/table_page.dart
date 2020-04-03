@@ -10,6 +10,8 @@ class TablePage extends StatefulWidget {
   final double bsmv;
   final double kkdf;
   final double installment;
+  final Color themeColor;
+  final Color labelColor;
 
   TablePage({
     this.creditTableList,
@@ -19,6 +21,8 @@ class TablePage extends StatefulWidget {
     this.bsmv,
     this.kkdf,
     this.installment,
+    this.themeColor,
+    this.labelColor,
   });
 
   @override
@@ -45,7 +49,11 @@ class _TablePageState extends State<TablePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(tableAppBarTitle),
+        backgroundColor: widget.themeColor ?? Colors.blueAccent,
+        title: Text(tableAppBarTitle,style: TextStyle(color: widget.labelColor ?? Colors.black),),
+        iconTheme: IconThemeData(
+          color: widget.labelColor ?? Colors.black, //change your color here
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -83,6 +91,7 @@ class _TablePageState extends State<TablePage> {
 
   Widget dataBodyTitle() {
     return DataTable(
+      columnSpacing: 5,
       columns: <DataColumn>[
         DataColumn(
             label: Text(
@@ -174,6 +183,7 @@ class _TablePageState extends State<TablePage> {
 
   Widget dataBody() {
     return DataTable(
+      columnSpacing: 5,
       columns: <DataColumn>[
         DataColumn(
             label: Text(

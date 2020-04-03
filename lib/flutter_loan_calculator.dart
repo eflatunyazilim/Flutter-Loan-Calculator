@@ -1,14 +1,25 @@
 library flutter_loan_calculator;
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_loan_calculator/models/table_model.dart';
 import 'package:flutter_loan_calculator/pages/table_page.dart';
 
 class PaymentGenerator extends StatefulWidget {
 
   final String description;
+  final Color backgroundColor;
+  final Color tabBarLineColor;
+  final Color selectedTabLabelColor;
+  final Color unselectedTabLabelColor;
+  final Color buttonColor;
+  final Color selectedTabBorderColor;
+  final Color unselectedTabBorderColor;
+  final Color tablePageThemeColor;
+  final Color tablePageLabelColor;
 
-  const PaymentGenerator({Key key, this.description}) : super(key: key);
+  const PaymentGenerator({Key key, this.description, this.backgroundColor, this.tabBarLineColor, this.selectedTabLabelColor, this.unselectedTabLabelColor, this.buttonColor, this.selectedTabBorderColor, this.unselectedTabBorderColor, this.tablePageThemeColor, this.tablePageLabelColor}) : super(key: key);
 
   @override
   _PaymentGeneratorState createState() => _PaymentGeneratorState();
@@ -59,8 +70,14 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
   String validatorWarning = "Lütfen bu alanı doldurun!";
   String validatorWarning2 = "Lütfen kullanılabilir değer girin!";
 
+  // Widget değişkenleri
+  Color selectedBorderColor;
+  Color unSelectedBorderColor;
+
   @override
   void initState() {
+    selectedBorderColor = widget.selectedTabBorderColor ?? Colors.blue;
+    unSelectedBorderColor = widget.unselectedTabBorderColor ?? Colors.grey;
 
     if(widget.description != null){
       description = widget.description;
@@ -95,7 +112,7 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
       body: Container(
-        color: Colors.white,
+        color: widget.backgroundColor ?? Colors.white,
         child: ListView(
           children: <Widget>[
             SingleChildScrollView(
@@ -115,6 +132,7 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                     highlightColor: Colors.transparent,
                     child: Column(
                       children: <Widget>[
+                        // Description
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -137,6 +155,7 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                             ),
                           ],
                         ),
+                        // Tab bar
                         Container(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -145,40 +164,102 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                               Padding(
                                 padding: EdgeInsets.only(left: 10, right: 10),
                                 child: Container(
+                                  // Tab bar butonları çerçeve
                                   decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 1, color: Colors.grey.shade200),
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(11)),
+                                    //border: Border.all(width: 1, color: Colors.grey.shade200),
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(5.5)),
                                   ),
                                   child: Container(
                                     height: 40,
                                     margin:
                                     EdgeInsets.only(left: 10, right: 10),
                                     child: Stack(
-                                      fit: StackFit.passthrough,
-                                      alignment: isSelectedLeft
-                                          ? Alignment.centerRight
-                                          : Alignment.centerLeft,
                                       children: <Widget>[
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                              .size
-                                              .width /
-                                              2.5,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey.shade400,
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(11)),
-                                          ),
+                                        // Gri tab
+                                        Row(
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: isSelectedLeft ? Colors.white : Colors.white,
+//                                                    border: Border(
+//                                                      top: BorderSide(
+//                                                        width: 1,
+//                                                        color: isSelectedLeft
+//                                                            ? widget.selectedTabBorderColor ?? Colors.blue
+//                                                            : widget.unselectedTabBorderColor ?? Colors.grey,
+//                                                      ),
+//                                                      left: BorderSide(
+//                                                        width: 1,
+//                                                        color: isSelectedLeft
+//                                                            ? widget.selectedTabBorderColor ?? Colors.blue
+//                                                            : widget.unselectedTabBorderColor ?? Colors.grey,
+//                                                      ),
+//                                                      right: BorderSide(
+//                                                        width: 1,
+//                                                        color: isSelectedLeft
+//                                                            ? widget.selectedTabBorderColor ?? Colors.blue
+//                                                            : Colors.transparent,
+//                                                      ),
+//                                                    ),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: isSelectedLeft
+                                                          ? widget.selectedTabBorderColor ?? Colors.blue
+                                                          : widget.unselectedTabBorderColor ?? Colors.grey,
+                                                    ),
+                                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(5.5))
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 1,),
+                                            Expanded(
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: isSelectedLeft ? Colors.white : Colors.white,
+//                                                    border: Border(
+//                                                      top: BorderSide(
+//                                                        width: 1,
+//                                                        color: isSelectedLeft
+//                                                            ? widget.unselectedTabBorderColor ?? Colors.grey
+//                                                            : widget.selectedTabBorderColor ?? Colors.blue,
+//                                                      ),
+//                                                      right: BorderSide(
+//                                                        width: 1,
+//                                                        color: isSelectedLeft
+//                                                            ? widget.unselectedTabBorderColor ?? Colors.grey
+//                                                            : widget.selectedTabBorderColor ?? Colors.blue,
+//                                                      ),
+//                                                      left: BorderSide(
+//                                                        width: 1,
+//                                                        color: isSelectedLeft
+//                                                            ? Colors.transparent
+//                                                            : widget.selectedTabBorderColor ?? Colors.blue,
+//                                                      ),
+//                                                    ),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: isSelectedLeft
+                                                          ? widget.unselectedTabBorderColor ?? Colors.grey
+                                                          : widget.selectedTabBorderColor ?? Colors.blue,
+                                                    ),
+                                                    borderRadius: BorderRadius.only(topRight: Radius.circular(5.5))
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                        // Tab butonları
                                         TabBar(
                                           controller: _tabController,
-                                          labelColor: Colors.black,
-                                          unselectedLabelColor: Colors.black,
+                                          labelColor: widget.selectedTabLabelColor
+                                              ?? Colors.black,
+                                          unselectedLabelColor: widget.unselectedTabLabelColor
+                                              ?? Colors.black,
                                           indicator: UnderlineTabIndicator(
                                             borderSide: BorderSide(
-                                              color: Colors.blue,
+                                              color: widget.tabBarLineColor
+                                                  ?? Colors.transparent,
                                               width: 4.0,
                                             ),
                                             insets: EdgeInsets.fromLTRB(
@@ -209,11 +290,13 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                 height: contSize,
                                 margin: EdgeInsets.only(
                                     left: 10, right: 10, bottom: 10),
+                                // İnnputlar dış çerçevesi
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     width: 1,
                                     color: Colors.grey.shade200,
                                   ),
+                                  borderRadius: BorderRadius.all(Radius.circular(5.5)),
                                 ),
                                 child: TabBarView(
                                   controller: _tabController,
@@ -283,7 +366,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                   EdgeInsets.only(left: 10),
                                                 ),
                                                 keyboardType:
-                                                TextInputType.number,
+                                                TextInputType.numberWithOptions(
+                                                  decimal: true,
+                                                  signed: false,
+                                                ),
                                                 onSaved: (input) {
                                                   interest =
                                                       double.parse(input);
@@ -357,7 +443,7 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                   settingsButtonText,
                                                   style: TextStyle(
                                                       fontSize: 12,
-                                                      color: Colors.blueAccent),
+                                                      color: widget.buttonColor ?? Colors.blueAccent),
                                                 ),
                                                 onPressed: () {
                                                   setState(() {
@@ -398,7 +484,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                         left: 10),
                                                   ),
                                                   keyboardType:
-                                                  TextInputType.number,
+                                                  TextInputType.numberWithOptions(
+                                                    decimal: true,
+                                                    signed: false,
+                                                  ),
                                                   onSaved: (input) {
                                                     setState(() {
                                                       kkdf =
@@ -444,7 +533,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                         left: 10),
                                                   ),
                                                   keyboardType:
-                                                  TextInputType.number,
+                                                  TextInputType.numberWithOptions(
+                                                    decimal: true,
+                                                    signed: false,
+                                                  ),
                                                   onSaved: (input) {
                                                     setState(() {
                                                       bsmv =
@@ -464,6 +556,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                           // Hesaplama Butonu
                                           Flexible(
                                             child: Container(
+                                              decoration: BoxDecoration(
+                                                color: widget.buttonColor ?? Colors.blue,
+                                                borderRadius: BorderRadius.all(Radius.circular(5.5)),
+                                              ),
                                               width: MediaQuery.of(context)
                                                   .size
                                                   .width,
@@ -471,7 +567,6 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                 left: 10,
                                                 right: 10,
                                               ),
-                                              color: Colors.blue,
                                               child: FlatButton(
                                                 child: Text(
                                                   firstCalculatorButtonText,
@@ -506,6 +601,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                                   kkdf,
                                                                   installment:
                                                                   installment,
+                                                                  themeColor:
+                                                                  widget.tablePageThemeColor,
+                                                                  labelColor:
+                                                                  widget.tablePageLabelColor,
                                                                 )));
                                                   } else {
                                                     setState(() {
@@ -580,7 +679,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                   EdgeInsets.only(left: 10),
                                                 ),
                                                 keyboardType:
-                                                TextInputType.number,
+                                                TextInputType.numberWithOptions(
+                                                  decimal: true,
+                                                  signed: false,
+                                                ),
                                                 onSaved: (input) {
                                                   interest =
                                                       double.parse(input);
@@ -656,7 +758,7 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                   settingsButtonText,
                                                   style: TextStyle(
                                                       fontSize: 12,
-                                                      color: Colors.blueAccent),
+                                                      color: widget.buttonColor ?? Colors.blueAccent),
                                                 ),
                                                 onPressed: () {
                                                   setState(() {
@@ -696,7 +798,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                         left: 10),
                                                   ),
                                                   keyboardType:
-                                                  TextInputType.number,
+                                                  TextInputType.numberWithOptions(
+                                                    decimal: true,
+                                                    signed: false,
+                                                  ),
                                                   onSaved: (input) {
                                                     setState(() {
                                                       kkdf =
@@ -741,7 +846,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                         left: 10),
                                                   ),
                                                   keyboardType:
-                                                  TextInputType.number,
+                                                  TextInputType.numberWithOptions(
+                                                    decimal: true,
+                                                    signed: false,
+                                                  ),
                                                   onSaved: (input) {
                                                     setState(() {
                                                       bsmv =
@@ -760,6 +868,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                           ),
                                           Flexible(
                                             child: Container(
+                                              decoration: BoxDecoration(
+                                                color: widget.buttonColor ?? Colors.blue,
+                                                borderRadius: BorderRadius.all(Radius.circular(5.5)),
+                                              ),
                                               width: MediaQuery.of(context)
                                                   .size
                                                   .width,
@@ -767,7 +879,6 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                 left: 10,
                                                 right: 10,
                                               ),
-                                              color: Colors.blue,
                                               child: FlatButton(
                                                 child: Text(
                                                   secondCalculatorButtonText,
@@ -802,6 +913,10 @@ class _PaymentGeneratorState extends State<PaymentGenerator>
                                                                   kkdf,
                                                                   installment:
                                                                   installment,
+                                                                  themeColor:
+                                                                  widget.tablePageThemeColor,
+                                                                  labelColor:
+                                                                  widget.tablePageLabelColor,
                                                                 )));
                                                   } else {
                                                     setState(() {

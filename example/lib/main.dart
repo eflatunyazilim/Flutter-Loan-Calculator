@@ -32,7 +32,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return PaymentGenerator(
-      // description: description,
+      description: description,
+      selectedTabLabelColor: Colors.green,
+      unselectedTabLabelColor: Colors.grey,
+      unselectedTabBorderColor: Colors.grey,
+      selectedTabBorderColor: Colors.purple,
     );
   }
 }
